@@ -1,0 +1,37 @@
+ARG RUBY_VERSION=3.4.2
+FROM ruby:$RUBY_VERSION-slim
+# https://hub.docker.com/_/ruby/tags?name=slim
+
+# Install system dependencies
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+  build-essential libyaml-dev libpq-dev postgresql-client \
+  && rm -rf /var/lib/apt/lists/*
+
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+
+# Set working directory
+WORKDIR /app
+
+# Copy Gemfile first for caching and install gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy the entire application code
+COPY . /app
+
+# Create non-root user
+RUN groupadd --system --gid ${HOST_GID} rails && \
+  useradd rails --uid ${HOST_UID} --gid ${HOST_GID} --create-home --shell /bin/bash && \
+  chown -R rails:rails /app
+
+# Ensure log directory exists with correct permissions
+RUN mkdir -p /app/log && \
+  chown -R rails:rails /app/log && \
+  chmod -R 755 /app/log
+
+# Use non-root user
+USER rails
+
+# Default command
+CMD ["/bin/bash"]

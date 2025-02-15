@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  rails:
+    build:
+      context: ./rails
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./rails:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b '0.0.0.0' -p 3000"
+
+  # phoenix:
+  #   build:
+  #     context: ./phoenix
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - ./phoenix:/app
+  #   working_dir: /app
+  #   ports:
+  #     - "4000:4000"
+  #   depends_on:
+  #     - db
+  #   command: bash -c "mix deps.get && mix ecto.migrate && mix phx.server"
+
+volumes:
+  db_data:
+
