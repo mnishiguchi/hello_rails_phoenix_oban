@@ -1,6 +1,8 @@
 defmodule SampleAppWeb.Router do
   use SampleAppWeb, :router
 
+  import Oban.Web.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -18,6 +20,8 @@ defmodule SampleAppWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    oban_dashboard("/oban")
   end
 
   # Other scopes may use custom stacks.

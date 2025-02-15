@@ -11,6 +11,7 @@ defmodule SampleApp.Application do
       SampleAppWeb.Telemetry,
       SampleApp.Repo,
       {DNSCluster, query: Application.get_env(:sample_app, :dns_cluster_query) || :ignore},
+      {Oban, Application.fetch_env!(:sample_app, Oban)},
       {Phoenix.PubSub, name: SampleApp.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: SampleApp.Finch},
