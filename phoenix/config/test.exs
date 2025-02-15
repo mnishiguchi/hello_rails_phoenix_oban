@@ -1,4 +1,5 @@
 import Config
+config :sample_app, Oban, testing: :manual
 
 # Configure your database
 #

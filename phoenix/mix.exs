@@ -57,7 +57,10 @@ defmodule SampleApp.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:oban, "~> 2.19"},
+      {:oban_web, "~> 2.11"},
+      {:igniter, "~> 0.5", only: [:dev]}
     ]
   end
 
