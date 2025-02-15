@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eux
+
+# Stop the app
+docker compose down
+
+# Stop containers bound to ports 4000, 8080, and 5432 (if any exist)
+docker container ls --format "{{.ID}}\t{{.Ports}}" |
+  awk '/4000|8080|5432/ {print $1}' |
+  xargs -r -t -I{} docker container stop {}
+
+# Ensure dependencies are installed
+docker compose run --rm --no-deps web mix deps.get
+if [ -f ./assets/package.json ]; then
+  docker compose run --rm --no-deps web npm install --prefix assets
+fi
+
+# Set up the application
+docker compose run --rm -e MIX_ENV=dev web mix setup
+docker compose run --rm -e MIX_ENV=test web mix setup
+
+# Start the app
+docker compose up --detach --remove-orphans

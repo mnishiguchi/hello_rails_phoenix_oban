@@ -22,18 +22,18 @@ services:
       - db
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec foreman start -f Procfile.dev"
 
-  # phoenix:
-  #   build:
-  #     context: ./phoenix
-  #     dockerfile: Dockerfile.dev
-  #   volumes:
-  #     - ./phoenix:/app
-  #   working_dir: /app
-  #   ports:
-  #     - "4000:4000"
-  #   depends_on:
-  #     - db
-  #   command: bash -c "mix deps.get && mix ecto.migrate && mix phx.server"
+  phoenix:
+    build:
+      context: ./phoenix
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./phoenix:/app
+    working_dir: /app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    command: bash -c "mix deps.get && mix ecto.migrate && mix phx.server"
 
 volumes:
   db_data:
