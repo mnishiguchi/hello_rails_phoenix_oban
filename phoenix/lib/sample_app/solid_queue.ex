@@ -11,10 +11,14 @@ defmodule SampleApp.SolidQueue do
   making it available for processing.
 
   ## Example:
-      SampleApp.SolidQueue.enqueue("EchoJob", args: %{message: "Hello from Phoenix"})
+      SampleApp.SolidQueue.enqueue("EchoJob", %{message: "Hello from Phoenix"})
   """
-  def enqueue(class_name, opts \\ []) do
-    args = Keyword.get(opts, :args, %{})
+  def enqueue(class_name, args, opts \\ [])
+
+  def enqueue("PhoenixJob" = class_name, %{task_name: _, task_result: _} = args, opts),
+    do: enqueue(class_name, args, opts)
+
+  def enqueue(class_name, args, opts) do
     job_id = Ecto.UUID.generate()
     queue_name = Keyword.get(opts, :queue_name, "default")
     priority = Keyword.get(opts, :priority, 0)
